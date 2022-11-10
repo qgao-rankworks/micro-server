@@ -1,0 +1,195 @@
+https://docs.google.com/spreadsheets/d/1IUwA9VNyS7yksmWD-qWw1b6afVk6f6Og2EA0tDfrTLA/edit#gid=0
+
+
+1) nginx + nginx rtmp module ------https://www.nginx.com/blog/video-streaming-for-remote-learning-with-nginx/
+sudo apt update
+sudo apt install build-essential git
+sudo apt install libpcre3-dev libssl-dev zlib1g-dev
+ 
+cd mnt
+sudo git clone https://github.com/nginx/nginx.git
+sudo git clone https://github.com/arut/nginx-rtmp-module.git
+cd nginx
+sudo ./auto/configure --with-http_ssl_module --add-module=../nginx-rtmp-module  --with-debug 
+sudo mkdir -p /mnt/rec
+
+cd /mnt/nginx
+
+sudo make
+sudo make install
+
+/usr/local/nginx/sbin/nginx -V
+
+
+sudo /usr/local/nginx/sbin/nginx -s stop
+
+sudo nano /usr/local/nginx/conf/nginx.conf
+sudo /usr/local/nginx/sbin/nginx -t
+sudo /usr/local/nginx/sbin/nginx
+sudo lsof -i -P -n | grep LISTEN
+sudo systemctl restart nginx
+ 
+2)gcsfuse
+export GCSFUSE_REPO=gcsfuse-`lsb_release -c -s`
+echo "deb http://packages.cloud.google.com/apt $GCSFUSE_REPO main" | sudo tee /ls etc/apt/sources.list.d/gcsfuse.list
+curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
+
+sudo apt-get update
+sudo apt-get install gcsfuse
+
+/mnt
+gcsfuse --debug_fuse --debug_gcs --debug_invariants --foreground --key-file=/mnt/gcsfuse.json nbc-livestream-recording /mnt/rec
+gcsfuse --key-file=/mnt/gcsfuse.json nbc-livestream-recording /mnt/rec 
+gcsfuse --debug_fuse --debug_gcs --debug_invariants  --key-file=/home/aquaman01/aquarium-livestream/api/gcs_key.json nbc-livestream-recording /home/aquaman01/aquarium-livestream/api/recordings
+/rec
+
+sudo fusermount -u /mnt/rec
+df -h
+ls 
+sudo nano /usr/local/nginx/conf/nginx.conf
+sudo /usr/local/nginx/sbin/nginx -s stop
+
+https://github.com/GoogleCloudPlatform/gcsfuse/blob/master/docs/mounting.md#access-permissions
+
+#gcsmount 
+sudo nano /etc/fstab
+
+laravel-mysql-backup /home/aquaman01/.aquarium gcsfuse rw,_netdev,allow_other,uid=1013,gid=1014,key_file=/mnt/gcs_key.json
+nbc-livestream-recording /mnt/rec gcsfuse rw,_netdev,allow_other,uid=65534,gid=65534,key_file=/mnt/gcs_key.json
+cd /etc
+sudo mount /mnt/rec
+sudo reboot now
+nano /etc/passwd
+nano /etc/group
+gcsfuse --debug_fuse --debug_gcs --debug_invariants --key-file=/usr/src/app/api/gcs_key.json nbc-livestream-recording /mnt/rec
+
+lsb_release -a
+
+nobody:x:65534:65534:nobody:/nonexistent:/usr/sbin/nologin
+
+.sh
+touch /mnt/scripts/convert_save.sh
+sudo chown root:root /mnt/scripts/convert_save.sh
+sudo chmod 777 /mnt/scripts/convert_save.sh
+sudo grep username /etc/passwd
+
+sudo /usr/local/nginx/sbin/nginx -s stop
+
+
+htop
+docker inspect <image id>
+
+
+worker_processes  auto;
+
+events {
+    worker_connections  1024;
+}
+
+
+docker logs -f --tail 10 <container_name>
+cat /usr/local/nginx/logs/error.log
+tail -n 100 /usr/local/nginx/logs/error.log
+https://goaccess.io/
+
+
+https://launchpad.net/ubuntu/+archive/primary/+sourcefiles/ffmpeg/7:4.4.1-3ubuntu5/ffmpeg_4.4.1.orig.tar.xz
+
+https://tritondigitalcommunity.force.com/s/article/Choosing-Audio-Bitrate-Settings?language=en_US
+https://www.headphonesty.com/2019/07/sample-rate-bit-depth-bit-rate/
+
+#ffmpeg  --  https://blog.addpipe.com/flv-to-mp4/
+sudo apt update
+sudo apt install ffmpeg
+ffmpeg -version
+
+ffmpeg -i $path -movflags faststart -profile:v high -level 4.0 /mnt/rec/$basename.mp4
+
+
+
+# creat a nginx service. Save this file as /lib/systemd/system/nginx.service
+sudo nano /lib/systemd/system/nginx.service
+[Unit]
+Description=The NGINX HTTP and reverse proxy server
+After=syslog.target network-online.target remote-fs.target nss-lookup.target
+Wants=network-online.target
+
+[Service]
+Type=forking
+PIDFile=/usr/local/nginx/logs/nginx.pid
+ExecStartPre=/usr/local/nginx/sbin/nginx  -t
+ExecStart=/usr/local/nginx/sbin/nginx 
+ExecReload=/usr/local/nginx/sbin/nginx -s reload
+ExecStop=/bin/kill -s QUIT $MAINPID
+PrivateTmp=true
+
+Restart=always
+RestartSec=10s
+
+[Install]
+WantedBy=multi-user.target
+
+ps -ef |grep nginx
+
+# add pid of nginx
+sudo nano /usr/local/nginx/logs/nginx.pid ------ https://docs.nginx.com/nginx/admin-guide/basic-functionality/runtime-control/#:~:text=The%20process%20ID%20of%20the,or%20%2Fvar%2Frun%20directory.
+sudo systemctl restart nginx
+sudo systemctl start nginx
+sudo systemctl stop nginx
+
+# start nginx service
+sudo systemctl enable nginx
+sudo systemctl disable nginx
+systemctl is-enabled nginx
+
+sudo reboot now
+
+kill -9 19506
+htop
+docker stats <container-id>
+
+sudo nano /mnt/scripts/convert_save.sh
+
+sudo lsof -i -P -n | grep LISTEN
+systemctl --type=service --no-legend
+service --status-all
+
+#networking
+
+docker network ls
+docker network inspect aquarium-livestream_nbc
+ip addr show
+
+
+# ssl on vm --- http://nginx.org/en/docs/http/ngx_http_ssl_module.html   ---- http://nginx.org/en/docs/http/ngx_http_v2_module.html
+sudo mkdir /mnt/nginx/ssl
+sudo chmod 777 /mnt/nginx/ssl----
+openssl version 
+
+
+36$/monthly = 50GB
+
+432 + 396 + 360 + 324 + ...... + 36 = 2500/ yearly
+
+
+ flv to mp4  audio  
+
+1) add rtmps with secure rtmp protocol 
+
+apt-cache depends curl
+
+https://qdmana.com/2021/07/20210721201507358v.html
+https://github.com/jrottenberg/ffmpeg/blob/main/docker-images/5.0/ubuntu2004/Dockerfile
+https://qdmana.com/2021/07/20210721201507358v.html
+
+srt 
+
+https://cloud.google.com/speech-to-text/docs/optimizing-audio-files-for-speech-to-text
+https://github.com/Novage/p2p-media-loader
+https://github.com/Novage/wt-tracker
+
+https://www.youtube.com/watch?v=AW6sUa3MoCk
+
+laravel-mysql-backup /home/aquaman01/.aquarium gcsfuse rw,_netdev,allow_other,uid=65534,gid=65534,key_file=/mnt/gcs_key.json
+
+gcsfuse --debug_fuse --debug_gcs --debug_invariants --key-file=/mnt/gcs_key.json laravel-mysql-backup /home/aquaman01/.aquarium

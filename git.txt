@@ -1,0 +1,223 @@
+setup:
+https://medium.com/integrate-git-bash-with-github-and-visal-studio/a-step-by-step-tutorial-on-how-to-install-git-bash-manage-ssh-keys-and-integrate-it-to-the-remote-6da5ba68db69
+
+
+
+$ eval "$(ssh-agent -s)"
+$ ssh-add ~/.ssh/whynotblueSSHkey
+ls -al ~/.ssh
+git pull
+
+$ clear 
+$ git pull origin
+$ git pull origin Develop
+ - Fetch from and integrate with another repository or a local branch
+
+$ git branch----create branch
+
+$ git stash----
+$ stash
+
+$ git pull origin Develop
+$ git merge
+
+
+$ git fetch  - Download objects and refs from another repository
+$ git checkout KAAYU-356-gao-integrate-home-page-backgr
+
+
+$
+////////////////////////
+
+learn git 
+//https://www.youtube.com/watch?v=HVsySz-h9r4
+$ git --version
+
+$ git config --global user.name ""
+$ git config --global user.email ""
+$ git config --list   //list all global information
+
+$ git help config
+$ git config --help
+
+$ ls  
+$ ls -la  //list directory and files
+$ cd /*path*/ //goes in directory
+$ git init  //start tracking this project
+$ rm -rf .git //stop tracking this project
+
+$ git status //*** check status of git
+
+$ touch .gitignore // create ignore file
+$ notepad .gitignore //open editer
+
+working directory
+staging area
+committed files
+
+$ git add   // add files to staginh area
+$ git add -A //add all files to staging area
+
+$ git reset // remove files from staging area
+
+
+//our first commit
+$ git add -A
+$ git commit -m "Initial Commit"
+$ git status
+$ git log
+
+//track an existing remote project with git
+//your company has a remote repository and you want to clone that remote repository and begin developing on it 
+
+$ git clone <url> <where to clone> // dot means current 
+
+$ git clone --recurse-submodules https://github.com/chaconinc/MainProject
+repository
+$ git clone https://gao32767@bitbucket.org/gao32767/react.git .
+
+//viewing info about the remote repository 
+
+$ git remote -v
+$ git branch -a //it will list all the branches in our repository not locally
+
+
+pushing changes
+
+$ git diff //show me the changes
+$ git status 
+$ git add -A
+$ git cogit mmit -m "Modified multiply function"
+
+then push
+
+$ git pull origin master 
+
+//pull first,multiple developers have been pushing code to that remote repository. pull any changes that have been made since the last time that we pulled from that repository 
+
+$ git push origin master
+
+// origin here is just the name of our remote repositoy
+// master is the branch that we want to push to
+
+
+Common workflow
+create a branch for desired feature
+
+$ git branch clac-divide
+$ git checkout clac-divide
+
+//without branch name then it's going to show list my local branches you can see
+
+
+working on new branch
+$ git checkout clac-divide
+//some changes happened
+$ git add -A
+$ git commit -m "Divede function"
+//committed this changes to our local calc-divide branch new this had no effect on out local master branch and it's had no effect on our remote repository
+
+after commit push branch to remote
+
+$ git push -u origin calc-divide
+
+//calc-divide is the branch that we want to push
+//origin which is the name of our remote repository
+//u is tells git that we want to associate our local calc-divide branch with the remote calc-divide branch and then in the future instead of doing this $git pull and $ git push  like this and it will kown that those two branches are associated to each other
+//a lot of reason for why you'd want to push your branc up to remote repository and  a lot of companies  that's where they run their unit tests and things like that to make sure that all the code runs well before it's merged with master well 
+
+$ git branch -a
+
+Merge a branch
+
+$ git checkout master
+$ git pull origin master
+$ git branch --merged // double-check that everything was successfully merged
+$ git merge calc-divide  //merge 
+$ git push origin master
+
+
+deleting a branch
+
+$ git branch --merged
+$ git branch -d calc-divide 
+$ git branch -a
+$ git push origin --delete calc-divide 
+
+// or $ git push origin :calc-divide 
+
+
+//different branch must be merge new changes if where is the conflict with others happen will show it
+$ git merge origin Develop
+
+//only for some brach
+$ git pull origin Develop
+
+//revert a file from remote branch develop to current branch
+$ git checkout origin/develop -- kaayuwebapp/src/Components/WebContent/Home/ImageSlider2/Slider.tsx
+
+
+$ git checkout -b "gaoq"
+Switched to a new branch 'gaoq'
+
+
+conflicts:
+$ git add .
+$ git commit
+enter  "shift and :" 
+enter "qw"
+
+$ git log --oneline 
+
+// git cherry-pick
+git log hotfix/ref //to find the commit
+git cherry pick <sha1>  //applied to current branch
+
+// git bisect is useful when you have a bug introduced. one time in the past but you're not exactly sure which commit introduced the bug
+git bisect start
+git bisect bad
+git log --before="3 Weeks"
+git checkout 3348b0
+git bisect good 
+git show  
+git bisect log > bisect
+git bisect reset
+
+//config git 
+git config --global user.name "" // set username and if without "" is get username
+git config --global user.email ""
+git config --list
+git config --global core.editor "atom --wait"
+git config --global color.ui true
+git config --global pager.status true
+
+//merge feature to master
+//squash put summarize all the different commits together.
+git merge --squash feature
+git commit -m "feature and master merged"
+//you stop the merge and restore to the pre-merge state
+git merge --abort
+
+//merge with rebase
+git rebase master
+
+
+//checkout another use case is when you want to restore an old version of a file
+git checkout 8a7b201 index.html
+
+git config rerere.enabled true
+git rerere diff
+
+
+Discard all local changes, but save them for possible re-use later: git stash.
+Discarding local changes (permanently) to a file: git checkout -- <file>
+
+Unstage the file to current commit (HEAD): git reset HEAD <file>
+Unstage everything - retain changes: git reset.
+Discard all local changes, but save them for later: git stash.
+Discard all local changes to all files permanently: git reset --hard.
+
+
+
+
+

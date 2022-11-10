@@ -1,0 +1,120 @@
+version: "3"
+services:
+  
+  rankworks-nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    container_name: rankworks-nginx
+    image: rankworks-nginx
+    restart: unless-stopped
+    volumes: 
+      - ./certbot/conf:/etc/letsencrypt
+      - ./certbot/www:/var/www/certbot  
+    depends_on:
+      - api
+      - stripe
+      - certbot
+    ports:
+      - 443:443
+      - 80:80
+    cap_add:
+      - SYS_ADMIN
+    devices:
+      - "/dev/fuse:/dev/fuse"
+    security_opt:
+      - apparmor:unconfined
+    ulimits:
+      nofile:
+        soft: 65535
+        hard: 65535
+    command: ["/bin/sh", "-c", "while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\""]
+    
+    networks:
+      - rankworks
+      
+  certbot:
+    image: certbot/certbot
+    container_name: certbot
+    restart: unless-stopped    
+    volumes:
+      - ./certbot/conf:/etc/letsencrypt
+      - ./certbot/www:/var/www/certbot
+    entrypoint: ["/bin/sh", "-c", "trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;"]
+    networks:
+      - rankworks
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    container_name: rankworks-api
+    
+    image: rankworks-api
+    restart: unless-stopped
+
+    depends_on:
+      - db
+    environment:
+      - DB_URL=mongodb://db/rankworksDB
+    networks:
+      - rankworks
+    cap_add:
+      - SYS_ADMIN
+    devices:
+      - "/dev/fuse:/dev/fuse"
+    security_opt:
+      - apparmor:unconfined
+    ulimits:
+      nofile:
+        soft: 65535
+        hard: 65535
+    # entrypoint: [ "/usr/local/bin/docker-entrypoint.sh" ]
+    entrypoint: ["/mnt/scripts/api-start.sh"]
+    command: ["unitd", "--no-daemon", "--control", "unix:/var/run/control.unit.sock"]
+  stripe:
+    build:
+      context: ./stripe
+      dockerfile: Dockerfile
+    container_name: rankworks-stripe
+    
+    image: rankworks-stripe
+    restart: unless-stopped
+
+    depends_on:
+      - db
+      - api
+    environment:
+      - DB_URL=mongodb://db/rankworksDB
+    networks:
+      - rankworks
+    cap_add:
+      - SYS_ADMIN
+    devices:
+      - "/dev/fuse:/dev/fuse"
+    security_opt:
+      - apparmor:unconfined
+    ulimits:
+      nofile:
+        soft: 65535
+        hard: 65535
+    entrypoint: ["/mnt/scripts/api-start.sh"]
+    command: ["unitd", "--no-daemon", "--control", "unix:/var/run/control.unit.sock"]
+  db:
+    image: mongo:focal
+    container_name: rankworks-nosql
+    restart: unless-stopped
+    
+    ports:
+      - 27017:27017
+    volumes:
+      - taskdb:/data/db
+    networks:
+      - rankworks
+
+
+volumes:
+  taskdb:
+
+networks:
+  rankworks:
+  

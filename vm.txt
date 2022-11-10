@@ -1,0 +1,555 @@
+https://github.com/GoogleCloudPlatform/gcsfuse
+https://docs.google.com/document/d/1w7elNvAGAt_YU8ygiie5m-zZz5kdFozmClf_trTbJt4/edit
+
+
+https://docs.docker.com/engine/install/ubuntu/
+https://docs.docker.com/engine/install/linux-postinstall/
+
+
+1) setup ubuntu
+sudo apt-get update
+// add account
+
+sudo adduser aquaman01
+
+sudo usermod -aG sudo $USER
+
+systemctl status
+
+
+2) Nginx
+
+sudo apt-get install nginx
+sudo nginx -v
+http://34.152.7.6/   <your public ip>
+
+
+
+3) ssl --- https://github.com/wmnnd/nginx-certbot   https://pentacent.medium.com/nginx-and-lets-encrypt-with-docker-in-less-than-5-minutes-b4b8a60d3a71
+
+https://www.youtube.com/watch?v=hxngRDmHTM0 ---proxy
+or 4) ssl ----https://www.youtube.com/watch?v=X3Pr5VATOyA 
+cd /etc/nginx/conf.d
+sudo touch nbc-livestream-recording.laquarium.ca.conf
+sudo mkdir /etc/nginx/ssl
+// read and write
+sudo chmod 700 /etc/nginx/ssl
+// ssl certain key
+sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/nginx/ssl/nbclivestream.key -out /etc/nginx/ssl/nbclivestream.crt
+
+sudo nano /etc/nginx/conf.d/nbc-livestream-recording.laquarium.ca.conf
+server {
+        listen 80 default_server;
+        server_name nbc-livestream.laquarium.ca;
+        return 301 https://$server_name$request_uri;
+}
+
+server{
+        listen 443 ssl;
+        server_name nbc-livestream.laquarium.ca;
+
+        ssl_certificate /etc/nginx/ssl/nbclivestream.crt;
+        ssl_certificate_key /etc/nginx/ssl/nbclivestream.key;
+        location / {
+                root /usr/share/nginx.html;
+                index index.html index.htm;
+        }
+}
+sudo nginx -t
+
+sudo nginx -s reload
+
+sudo lsof -i -P -n | grep LISTEN
+sudo nano /etc/nginx/nginx.conf
+
+sudo nginx -t
+
+
+sudo nano nginx.conf
+sudo nginx -t
+sudo nginx -s reload
+
+
+
+// remove nginx
+https://linuxconfig.org/how-to-remove-nginx-from-ubuntu
+sudo apt-get purge nginx nginx-common
+After using any of the above commands, use this in order to remove dependencies used by nginx which are no longer required.
+sudo apt-get autoremove
+
+
+
+5) docker
+sudo apt install docker.io
+sudo groupadd docker
+sudo usermod -aG docker $USER
+
+newgrp docker
+
+sudo systemctl status docker
+sudo apt install docker-compose
+
+docker ps / docker container ls
+docker restart <container_id>
+docker logs <container_id>
+
+
+ssh-keygen
+
+**********************************************************************
+Stop the container(s) using the following command:
+docker-compose down
+Delete all containers using the following command: -------docker system prune---delete not used
+
+
+docker-compose down
+
+
+docker rm -f $(docker ps -a -q)
+docker rmi $(docker image  ls -q)
+docker volume rm $(docker volume ls -q)
+cd ..
+
+
+
+sudo rm -r ~/.jitsi-meet-cfg/
+
+sudo rm -r aquarium-livestream
+git clone git@github.com:Whynotblue/aquarium-livestream.git
+
+cd aquarium-livestream
+git checkout stage-nbc-live
+git pull origin stage-nbc-live
+
+************
+chmod +x init-letsencrypt.sh
+sudo ./init-letsencrypt.sh
+# Then manually run "chmod +x init-letsencrypt.sh" and "sudo ./init-letsencrypt.sh" on Google coud VM.
+
+!!!!! docker cp /mnt/nosql-backup/20220429/data/ rankworks-nosql:/db-resotore
+
+docker exec -i rankworks-nosql /usr/bin/mongorestore db-resotore/
+************************
+sudo docker-compose up --remove-orphans -d --build
+
+sudo lsof -i -P -n | grep LISTEN
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+6) google storage
+export GCSFUSE_REPO=gcsfuse-`lsb_release -c -s`
+echo "deb http://packages.cloud.google.com/apt $GCSFUSE_REPO main" | sudo tee /etc/apt/sources.list.d/gcsfuse.list
+curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
+sudo apt-get update
+sudo apt-get install gcsfuse
+gcsfuse nbc-livestream-recordings /home/aquaman01/aquarium-livestream/recordings
+df -h
+
+docker exec -it nginx-rtmp bash
+df -h
+
+gcsfuse nbc-livestream-recordings /home/rediffuseur/
+
+
+
+sudo lsof -i -P -n | grep LISTEN
+sudo lsof -n | egrep 'TCP.*LISTEN|UDP'
+
+7) firewall
+sudo ufw enable
+
+sudo ufw allow 22 
+sudo ufw allow 80
+sudo ufw allow 443
+sudo ufw allow 1935
+sudo ufw status verbose
+
+sudo nano /lib/systemd/system/ufw.service
+
+[Unit]
+Description=Uncomplicated firewall
+Documentation=man:ufw(8)
+DefaultDependencies=no
+Before=network.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/lib/ufw/ufw-init start quiet
+ExecStop=/lib/ufw/ufw-init stop
+
+Restart=always
+RestartSec=10s
+[Install]
+WantedBy=multi-user.target
+
+ ps -ef |grep ufw
+
+sudo systemctl enable ufw
+systemctl is-enabled ufw
+
+systemctl --type=service --no-legend
+service --status-all
+service ufw status
+
+sudo /lib/ufw/ufw-init stop
+sudo /lib/ufw/ufw-init start quiet
+
+ps -axo pcpu,pmem,pid,command | grep ufw
+
+
+In google cloud platform -> more actions -> view network details -> firewall 1)create a firewall rule2) assgin to VM 
+check your ports: https://www.yougetsignal.com/tools/open-ports/
+***********************8
+
+scp filename1 filename2 qian@publicip:/home/qian
+
+history -c
+history 
+
+
+https://cloud.google.com/compute/docs/networking/configure-vm-with-high-bandwidth-configuration
+
+    prejoinPageEnabled: false,
+
+sudo usermod -aG docker qian
+
+opt = {
+        agent: { 
+            id: Math.floor(Math.random() * 500) + 1+"", 
+            name: "agent" 
+        },
+        join_btn: "rankworks-join-btn",
+        parentNode: "rankworks-conference-wrapper",
+        api_username: "lucy-api",
+        api_password: "j6ULe48h45@5"
+    }
+
+
+https://demo-lucy.laquarium.ca
+https://api-lucy.laquarium.ca
+https://conference-lucy.laquarium.ca
+
+netstat -ao
+
+https://www.youtube.com/watch?v=rNOGLLPXzwc
+https://www.digitalocean.com/community/tutorials/how-to-use-ansible-to-automate-initial-server-setup-on-ubuntu-20-04
+
+Mathieu GP
+Mathieu GP says:
+https://jitsi.github.io/handbook/docs/devops-guide/devops-guide-scalable/
+ 
+Mathieu GP says:
+https://webrtc.org/
+ 
+Mathieu GP says:
+https://jitsi.org/jitsi-videobridge/
+ 
+9:26
+ryan
+ryan says:
+https://jitsi.org/security/#:~:text=Jitsi%20meetings%20in%20general%20operate,1%2Dto%2D1%20meetings
+. 
+9:32
+Mathieu GP
+Mathieu GP says:
+https://github.com/jitsi/jitsi-videobridge/blob/master/doc/statistics.md
+
+
+The aquarium is runing on p2p and jvb. both? both
+
+How to switches from p2p to jvb if third partipant join to meeting? it is automatic or settings? auto
+
+ls -lha public/jitsi_iframe
+
+
+chown -R auqaman01:auqarium01 jitsi_iframe/
+
+http://localhost:8000/mon-entreprise/meeting-room/1
+
+The deployment is done using this Ansible role:
+https://github.com/coderbunker/ansible-docker-nginx-rtmp-role
+What the role does is prepare files needed to start the container using Docker Compose:
+https://github.com/coderbunker/ansible-docker-nginx-rtmp-role/blob/main/tasks/main.yml#L31
+https://github.com/coderbunker/ansible-docker-nginx-rtmp-role/blob/main/templates/docker-compose.yml.j2
+The Docker image and its source code are here:
+https://hub.docker.com/r/alqutami/rtmp-hls
+https://github.com/TareqAlqutami/rtmp-hls-server
+
+http://localhost:8080/hls/test.m3u8
+http://localhost:8080/dash/test.mpd
+
+
+
+https://github.com/arut/nginx-rtmp-module/wiki/Control-module
+https://www.ffmpeg.org/about.html
+
+
+
+Mathieu GP says:
+https://www.codegrepper.com/code-examples/whatever/connect+vm+to+cloud+storage+gcp
+ 
+Mathieu GP says:
+https://github.com/GoogleCloudPlatform/gcsfuse/blob/master/docs/installing.md
+ 
+Mathieu GP says:
+https://github.com/GoogleCloudPlatform/gcsfuse/blob/master/docs/mounting.md
+ 
+Mathieu GP says:
+https://github.com/coderbunker/ansible-docker-nginx-rtmp-role/blob/main/templates/vhost.j2
+ 
+Mathieu GP says:
+https://canal.facil.services/w/pAT1meH5gL8Czss5Y6sdEJ
+ 
+Mathieu GP says:ffmpeg -stream_loop -1 -re -i '/path/to/your/file.mp4' -c:v copy -c:a copy -strict -2 -flvflags no_duration_filesize -f flv rtmp://live-stage.laquarium.ca:1935/live/YOUR-KEY 
+Mathieu GP says:
+https://github.com/Novage/wt-tracker
+ 
+Mathieu GP says:
+https://github.com/Novage/p2p-media-loader
+ 
+Mathieu GP says:
+https://openwebtorrent.com
+, 
+https://tracker.novage.com.ua
+. 
+
+ JohnDoe
+git commit -m "AQU-171 #comment my message here. #time 1h" 
+
+https://www.youtube.com/watch?v=TsNnXwq0v3I
+
+https://blog.addpipe.com/flv-to-mp4/
+http://nginx.org/en/docs/http/ngx_http_core_module.html#tcp_nopush
+
+rm -v <directory>/* 
+
+rtmp recording feature
+https://github.cobackupm/arut/nginx-rtmp-module/wiki/Debug-log
+https://github.com/GoogleCloudPlatform/gcsfuse#other-performance-issues
+http://nginx-rtmp.blogspot.com/2014/01/new-execrecorddone-variables.html
+http://nginx-rtmp.blogspot.com/2014/01/redirecting-streams-in-version-111.html
+
+cat /etc/shells
+
+which bash
+
+https://docs.nginx.com/nginx/admin-guide/security-controls/configuring-http-basic-authentication/
+
+https://bluesolutions.atlassian.net/browse/AQU-211
+
+********************************88888
+mongo db
+docker exec -it <container id> bash
+mongo
+
+https://motor.readthedocs.io/en/stable/tutorial-asyncio.html
+
+
+# MongoDB----backup  https://faun.pub/how-to-backup-docker-containered-mongo-db-with-mongodump-and-mongorestore-b4eb1c0e7308
+
+
+************************
+docker cp /mnt/nosql-backup/20220429/data/ rankworks-nosql:/db-resotore
+
+docker exec -i rankworks-nosql /usr/bin/mongorestore db-resotore/
+*********************************************************
+
+
+docker exec -it rankworks-nosql bash
+
+mongo
+
+> show dbs
+admin   0.000GB
+config  0.000GB
+local   0.000GB
+rankworksDB   0.000GB
+> use rankworksDB
+switched to db rankworksDB
+> show collections
+recordings
+users
+
+exit  --------exit db
+mongodump --out /data/  ----------mongodb backup
+exit ------you should be out of the docker container bash terminal and into our host terminal
+
+sudo docker cp rankworks-nosql:/data/ nbc_nosql_backup
+# MongoDB restore 
+docker cp nbc_nosql_backup/ rankworks-nosql:/data
+docker exec -it rankworks-nosql bash
+mongorestore data/rankworksDB/ *.bson
+mongo
+
+> show dbs
+admin   0.000GB
+config  0.000GB
+local   0.000GB
+rankworksDB   0.000GB
+> use rankworksDB
+switched to db rankworksDB
+> show collections
+recordings
+users
+
+# gscfuse
+lssudo cp /home/aquaman01/aquarium-livestream/nginx/gcs_key.json /mnt/
+sudo nano /etc/fstab
+nbc-livesream-nosql-backup /mnt/nosql-backup gcsfuse rw,_netdev,allow_other,uid=65534,gid=65534,key_file=/mnt/gcs_key.json
+sudo mkdir nosql-backup
+sudo mount /mnt/nosql-backup
+sudo reboot
+
+# MongoDB Auto Backup via CronJob -----https://davejansen.com/how-to-dump-restore-a-mongodb-database-from-a-docker-container/
+sudo mkdir /mnt/scripts
+sudo nano /mnt/scripts/nosql_db_backup.sh
+#!/bin/bash
+DIR=`date +%Y%m%d`
+DEST=/mnt/nosql-backup/$DIR
+mkdir $DEST
+
+docker exec -i rankworks-nosql /usr/bin/mongodump --out /data
+
+sudo docker cp rankworks-nosql:/data/ $DEST/data
+
+sudo crontab -e
+30 6 * * * bash /mnt/scripts/nosql_db_backup.sh  --------at 6 :30 AM UTC ----at 2:30 Montreal
+
+sudo systemctl enable cron
+
+
+************************************8
+
+625435c891d1fde97d5113f8
+
+nbc-livestream-recording_5j6j576rwjk58k7_666ttftt6775_en-fr_1545730073
+
+
+<video controls="" class="cfc-form-width-large ng-star-inserted" sandboxuid="1" src="https://storage.cloud.google.com/nbc-livestream-recording/qian-en-fr-1649364962.mp4?authuser=1"></video>
+ 
+
+
+"basename": "nbc-livestream-recording_5j6j576rwjk58k7_666ttftt6775_en-fr_1545730073",
+            
+
+http://localhost:8007/docs#/
+
+https://www.youtube.com/watch?v=9f4LUALgyAU
+
+
+
+
+how to reach another container from a dockerized nginx
+
+
+
+
+https://smartshitter.com/musings/2018/06/nginx-rtmp-streaming-with-slightly-improved-authentication/
+
+625f71fc36a1575b0603e66c
+
+https://docs.python.org/2/library/time.html#time.strftime 
+
+rtmp://nbc-livestream.laquarium.ca/live?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2MjU2MjgzOTVhYzVkODhiZTAzMGJlNmQiLCJleHAiOjE2NTAyMzI2Mjd9.Gu8RpBxgpgrb8xBTdmnDokN0asf2KRrRYZuMhbJnCx0
+
+
+
+nbc-livestream-recording-aqu-123-aqu-6578-aqu-en-fr-aqu-Banque+National+Stocks+Meeting-aqu-1545730073
+
+
+super token
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2MjVmNzFmYzM2YTE1NzViMDYwM2U2NmMifQ.GBAn-ogiV4-dl1bRVaMz_3wX_t1EUB8fArd0xZUX9ko
+
+
+rtmp auth token
+
+
+https://cloud.google.com/storage/docs/json_api/v1
+https://googleapis.dev/python/google-api-core/latest/exceptions.html
+
+
+https://www.geeksforgeeks.org/how-to-run-bash-script-in-python/
+
+
+
+https://www.youtube.com/watch?v=OzUzrs8uJl8&t=16s
+https://lynn-kwong.medium.com/how-to-use-gsutil-and-python-to-deal-with-files-in-google-cloud-storage-fc4f430b3b28
+
+https://cloud.google.com/storage/docs/access-control#Signed-URLs
+
+
+https://nbc-bnc-stage.laquarium.ca/blue
+pass:   eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.ey
+
+https://www.ctl.io/developers/blog/post/dockerfile-entrypoint-vs-cmd/
+
+grep processor /proc/cpuinfo | wc -l
+
+# nginx unitd ---------https://unit.nginx.org/howto/source/#startup-and-shutdown
+               ----------------------https://github.com/nginx/unit
+unitd --log /var/log/unit.log
+unitd --help
+
+pip list
+
+free -h
+
+https://cloud.google.com/products/calculator
+
+
+{
+  "type": "service_account",
+  "project_id": "national-bank-staging",
+  "private_key_id": "76db21f601cd324a7af170e7374b93ecae422752",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCUvPPI3WmOZS0W\nytDT0a/BV3Esmns8kqos0zRZxeqDlge458eNwPghTz9GbF3krqJoTHrTUiXz6DR2\n4dyAqAshwqTJGSTpLhDRQKhrlL8PyF7BZ6fRTJCo7IrEYDRKRdIbzEhLApPCOWOp\nR0u/n1KObodPbj+ZIW2iq62ev55ZB3sTRmsEB5ka+r2BqVc1S45H/RbBoaq90xAe\n/RFCZ5LNL6xo4svtIIJOylzRi9hD8gbiqsVYKmf83frNghaZn0dE7GuxYKKA/unm\nCyCS0ir98uc7Dz8mh6aMo7nkRsyupMBq2Tv3fG0j62epcvY/SG4hMsVf7jeVQ6JY\nqrLyYKzXAgMBAAECggEASEdgMnrCKmPpWtuZSm3p+ksLYND7VS6yitDh7kQ619IH\nE6hytWSST+GKTqcno5LnskaEI4AWmGX9ZM4SUOUYb8H+QQk6giQUIRPKJGlmxX0p\n6tN73j5WR/iW4KIdlwBB/6cwdF8evbIUx7SxTz/Vpwh4MbXSKxBvDi9eUjgs83bs\n4f9XcSEaosvAcgYuV7jMvQHxbGrJDPghlSY+D0oG6XcClLoZvJgYjxR6JvzTvGlc\n7H/ffgSvCEPJTG738aiLViaxuS1el11qS/qdn/4tzdfTCMJ36QTBiXkzJgy7OEqH\nMMsK45LyO25yCBv1XjQeDT3EffsX+GC1moPLeEiSPQKBgQDKx2ryTlmBlY36907I\nLHhttjFHKsgEwKr1X7xWQJDk/AhhwvERCi3/KB62rJ0Qy1Be9MmW89fSB0G7s+Lw\nc/00iC1mM2MStrtjn8iI0OOz3g/iMyNBN+1pt1pKK7id2btxvNU1s+xCeXlIExlD\nCOa0c7K7oMoLa1nkf5LqdjFTVQKBgQC7xpB1Yc7Xgklq5YTp5Gn/oEWML2ZGWufu\nI+fq5i+lNUJZIZ/MxCNIlBmG2v4WGqJ9QDzbsdSgBhcfoeKKBZ7hzGqnAstssm0V\n1Nktd1RdVFb5JUggKcyc/ltQCCrypxhT25x0FAzPanm7YJcb37iKfncnY9JIW7qh\nFMUmQ20XewKBgQC9rbHdO+q/qxxnMCRSXD6+KVmI/3yf7XU9FzM93yFqAFL613XV\ngZcrAOVR7L7y8auZVxKmkCtGPCGBqa/TSjwEgoks+05mN+WrN9BGIleMbWCgL0OA\nAweiBq9/h8wmY3/R0VgC5u1N9QC8qZjMuqvLChqbJbk42073zVmo1awoDQKBgH/b\n4Ceddut10qoQKOXeW3LtXg3rhJepdL3KAzQGkzDKSChK5fXXJDNabNtPqK3Caxwg\nLpBl0WM5YmtunsPeueYEfCbGl1+nSvIPoeX8mByIvkQd57PG4oWQCPtA5IWf08fe\nBPVhZauiU8uMJLidKJpdLKNMrDYLB9SBQREh3lmbAoGAcuYjAgPuv/Gkfwv0rpbY\nzOvTvsnDzKc7IlVcygAj7Ap7PKIw3lh1BHJws2E9cbGyP4LgCoqxnY1OqTGSNdK/\nwxsH0pAVKKA2KtopGm/52HLN7BTYBndQHyOr4Y/kWnWAWcjIhpG0fXS55H25VKIf\nAYNoepyVuk7juRmINyQFie0=\n-----END PRIVATE KEY-----\n",
+  "client_email": "gcsfuse@national-bank-staging.iam.gserviceaccount.com",
+  "client_id": "110194428932741377103",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/gcsfuse%40national-bank-staging.iam.gserviceaccount.com"
+}
+
+Jean-Christophe Boucher4:18 PM
+https://cloud.google.com/storage/docs/moving-buckets#move-buckets
+Achref Souilem4:33 PM
+blue-bf32533.slack.com
+Jean-Christophe Boucher4:57 PM
+https://datastudio.google.com/u/0/reporting/1MJ0GHVvcHI6cRHwMKyeSK3r7UoabEHOH/page/WXzW
+Jean-Christophe Boucher5:20 PM
+Organization Role Administrator
+Security Admin
+Security Center Admin
+Support Account Administrator
+Threat Detection Settings Editor
+Folder Admin
+
+rtmp://stage.live.nbc.laquarium.ca/live?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2MjVmNzFmYzM2YTE1NzViMDYwM2U2NmMiLCJleHAiOjE2NTI3ODgyODJ9.G5_pZSGKfLNBetYWRFA3bC36wJk_UHSg2UdnoYZXCfQ
+livestream-recording-aqu-5-aqu-64-aqu-en-aqu-test-aqu
+
+rtmp://stage.live.nbc.laquarium.ca/live?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2MjY4NTFiOTA2OTE2MjdhMDE2ODZmNzAiLCJleHAiOjE2NTI0NDMyNDh9.rtFdrW7Nxe_DQMceLX2IBpwjMxJIpD9zJiRQKLD74bQ
+livestream-recording-aqu-5-aqu-64-aqu-en-aqu-test-aqu
+
+1)deepspeech
+https://github.com/mozilla/DeepSpeech
+2)Kaldi----------- c++
+https://github.com/kaldi-asr/kaldi
+3)wav2letter
+https://github.com/flashlight/wav2letter
+4)speechbrain   ---------python
+https://github.com/speechbrain/speechbrain
+5)coqui stt
+https://github.com/coqui-ai/STT
+
+https://tritondigitalcommunity.force.com/s/article/Choosing-Audio-Bitrate-Settings?language=en_US
+
+chrome://webrtc-internals/
+
+tail -n 1024 /var/log/nginx/http_error.log
+
+
+zip -r conf.zip conf
+scp cert.zip prod@production.diginov.tech:/home/prod
+openprod956823
