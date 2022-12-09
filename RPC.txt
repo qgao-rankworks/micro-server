@@ -1,0 +1,6 @@
+https://web3py.readthedocs.io/en/v5/
+https://trufflesuite.com/ganache/
+https://faucet.rinkeby.io/
+https://www.rinkeby.io/#stats
+https://github.com/web3/web3.js/tree/v1.8.1
+https://web3js.readthedocs.io/en/v1.8.1/
