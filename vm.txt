@@ -553,3 +553,30 @@ tail -n 1024 /var/log/nginx/http_error.log
 zip -r conf.zip conf
 scp cert.zip prod@production.diginov.tech:/home/prod
 openprod956823
+
+// kubernetes install
+sudo adduser rankman
+sudo usermod -aG sudo rankman
+sudo -iu rankman
+sudo apt-get update
+sudo apt-get upgrade
+sudo apt-get install docker.oi
+// install kubernetes 1.27
+// Update the apt package index and install packages needed to use the Kubernetes apt repository:
+
+sudo apt-get update
+sudo apt-get install -y apt-transport-https ca-certificates curl
+// Download the Google Cloud public signing key:
+
+curl -fsSL https://dl.k8s.io/apt/doc/apt-key.gpg | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-archive-keyring.gpg
+// Add the Kubernetes apt repository:
+
+echo "deb [signed-by=/etc/apt/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee /etc/apt/sources.list.d/kubernetes.list
+//Update apt package index, install kubelet, kubeadm and kubectl, and pin their version:
+
+sudo apt-get update
+sudo apt-get install -y kubelet kubeadm kubectl  --- master only
+sudo apt-mark hold kubelet kubeadm kubectl   --- master only
+
+
+
