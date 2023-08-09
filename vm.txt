@@ -561,6 +561,8 @@ sudo -iu rankman
 sudo apt-get update
 sudo apt-get upgrade
 sudo apt-get install docker.oi
+
+sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys B53DC80D13EDEF05
 // install kubernetes 1.27
 // Update the apt package index and install packages needed to use the Kubernetes apt repository:
 
