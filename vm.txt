@@ -617,6 +617,10 @@ kubectl apply -f https://github.com/coreos/flannel/raw/master/Documentation/kube
 
 kubectl get pods --all-namespaces
 
+wget https://get.helm.sh/helm-v3.7.2-linux-amd64.tar.gz
+tar -xvf helm-v3.7.2-linux-amd64.tar.gz
+mv linux-amd64/helm /usr/local/bin/
+
 // the scheduler will then be able to schedule Pods everywhere
 kubectl taint nodes --all node-role.kubernetes.io/control-plane-
 // 
@@ -630,4 +634,8 @@ kubectl get nodes
 kubectl run nginx --image=nginx
 kubectl get pods
 kubectl describe pods
+kubectl get pods -owide
+kubectl get pods -A
+
+ls /etc/kubernetes/manifests/
 
