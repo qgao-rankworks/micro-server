@@ -554,48 +554,7 @@ zip -r conf.zip conf
 scp cert.zip prod@production.diginov.tech:/home/prod
 openprod956823
 
-// kubernetes install
-sudo adduser rankman
-sudo usermod -aG sudo rankman
-sudo -iu rankman
-sudo apt-get update
-sudo apt-get upgrade
-sudo apt-get install docker.oi
-
-sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys B53DC80D13EDEF05
-// install kubernetes 1.27
-// Update the apt package index and install packages needed to use the Kubernetes apt repository:
-
-sudo apt-get update
-sudo apt-get install -y apt-transport-https ca-certificates curl
-// Download the Google Cloud public signing key:
-
-curl -fsSL https://dl.k8s.io/apt/doc/apt-key.gpg | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-archive-keyring.gpg
-// Add the Kubernetes apt repository:
-
-echo "deb [signed-by=/etc/apt/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee /etc/apt/sources.list.d/kubernetes.list
-//Update apt package index, install kubelet, kubeadm and kubectl, and pin their version:
-sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys B53DC80D13EDEF05
-sudo apt-get update
-sudo apt-get install -y kubelet kubeadm kubectl  --- master only
-sudo apt-mark hold kubelet kubeadm kubectl   --- master only
-
-
-
-//Create the kubeadm-config.yaml file.
-
-cat <<EOF> kubeadm-config.yaml
-apiVersion: kubeadm.k8s.io/v1beta3
-kind: ClusterConfiguration
-kubernetesVersion: stable
-controlPlaneEndpoint: "kmaster-montreal-a:6443"
-networking:
-  podSubnet: 192.168.0.0/16
-EOF
-https://www.codejet.net/kubernetes/2020/02/17/setup-kubernetes-master-from-gcp-vm.html
-
-https://gist.github.com/saiyam1814/03700751b8d1068c18c942cf768ea26f
-
+// kubernetes install**************************
 
 curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
 sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys B53DC80D13EDEF05
