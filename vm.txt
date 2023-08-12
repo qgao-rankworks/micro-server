@@ -593,3 +593,5 @@ networking:
   podSubnet: 192.168.0.0/16
 EOF
 https://www.codejet.net/kubernetes/2020/02/17/setup-kubernetes-master-from-gcp-vm.html
+
+https://gist.github.com/saiyam1814/03700751b8d1068c18c942cf768ea26f
