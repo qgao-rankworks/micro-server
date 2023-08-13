@@ -639,5 +639,10 @@ kubectl get pods -A
 kubectl cluster-info
 kubectl get ns    \\ namespaces
 
+//kubenetes dashboard install
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.7.0/aio/deploy/recommended.yaml
+kubectl -n kubernetes-dashboard get pods -o wide
+kubectl -n kubernetes-dashboard get svc
+
 ls /etc/kubernetes/manifests/
 
