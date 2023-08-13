@@ -644,8 +644,10 @@ kubectl proxy
 //kubenetes dashboard install
 kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.7.0/aio/deploy/recommended.yaml
 kubectl -n kubernetes-dashboard get pods -o wide
-kubectl -n kubernetes-dashboard get svc
+kubectl -n kubernetes-dashboard get svc / kubectl -n kubernetes-dashboard get services
 kubectl -n kubernetes-dashboard edit svc kubernetes-dashboard
+nslookup <domain>
+
 
 ls /etc/kubernetes/manifests/
 
