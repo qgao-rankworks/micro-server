@@ -636,6 +636,8 @@ kubectl get pods
 kubectl describe pods
 kubectl get pods -owide
 kubectl get pods -A
+kubectl cluster-info
+kubectl get ns    \\ namespaces
 
 ls /etc/kubernetes/manifests/
 
