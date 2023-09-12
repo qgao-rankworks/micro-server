@@ -604,7 +604,7 @@ fi
 sudo systemctl enable kubelet
 sudo kubeadm config images pull --cri-socket unix:///run/containerd/containerd.sock --kubernetes-version v1.26.1
 
-/// master node only-----
+/// -----------master node only-----
 sudo kubeadm init   --pod-network-cidr=10.244.0.0/16   --upload-certs --kubernetes-version=v1.26.1  --control-plane-endpoint=35.203.64.219 --ignore-preflight-errors=all  --cri-socket unix:///run/containerd/containerd.sock
 
 mkdir -p $HOME/.kube
@@ -651,3 +651,34 @@ nslookup <domain>
 
 ls /etc/kubernetes/manifests/
 
+------ in -site ----
+Your Kubernetes control-plane has initialized successfully!
+
+To start using your cluster, you need to run the following as a regular user:
+
+  mkdir -p $HOME/.kube
+  sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+  sudo chown $(id -u):$(id -g) $HOME/.kube/config
+
+Alternatively, if you are the root user, you can run:
+
+  export KUBECONFIG=/etc/kubernetes/admin.conf
+
+You should now deploy a pod network to the cluster.
+Run "kubectl apply -f [podnetwork].yaml" with one of the options listed at:
+  https://kubernetes.io/docs/concepts/cluster-administration/addons/
+
+You can now join any number of the control-plane node running the following command on each as root:
+
+  kubeadm join 35.203.64.219:6443 --token 22cj06.6wruhmku982eb7dv \
+        --discovery-token-ca-cert-hash sha256:c588403998d2219127876552654ae367aa88c14d8ff2caae8f42f8dae91fccbc \
+        --control-plane --certificate-key 0d17d12441dcc87cdfa0a12b45e2dc74fae4fd22c354097a742c9fb07a097328
+
+Please note that the certificate-key gives access to cluster sensitive data, keep it secret!
+As a safeguard, uploaded-certs will be deleted in two hours; If necessary, you can use
+"kubeadm init phase upload-certs --upload-certs" to reload certs afterward.
+
+Then you can join any number of worker nodes by running the following on each as root:
+
+kubeadm join 35.203.64.219:6443 --token 22cj06.6wruhmku982eb7dv \
+        --discovery-token-ca-cert-hash sha256:c588403998d2219127876552654ae367aa88c14d8ff2caae8f42f8dae91fccbc
