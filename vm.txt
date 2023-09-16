@@ -691,8 +691,30 @@ chmod +x /usr/local/bin/helm
 
 
 # NGINX Ingress Controller
-
+# https://github.com/marcel-dempers/docker-development-youtube-series/blob/master/kubernetes/ingress/controller/nginx/README.md
 # First thing we do is check the compatibility matrix to ensure we are deploying a compatible version of NGINX Ingress on our Kubernetes cluster https://github.com/kubernetes/ingress-nginx/
 helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
 helm search repo ingress-nginx --versions
+
+CHART_VERSION="4.7.0"
+APP_VERSION="1.8.2"
+
+mkdir ./kubernetes/ingress/controller/nginx/manifests/
+cd kubernetes/ingress/controller/nginx/manifests/
+
+
+helm template ingress-nginx ingress-nginx \
+--repo https://kubernetes.github.io/ingress-nginx \
+--version ${CHART_VERSION} \
+--namespace ingress-nginx \
+> /home/rankman/vm-rankworks/kubernetes/ingress/controller/nginx/manifests/nginx-ingress.${APP_VERSION}.yaml
+
+# Deploy the Ingress controller
+kubectl create namespace ingress-nginx
+kubectl apply -f /home/rankman/vm-rankworks/kubernetes/ingress/controller/nginx/manifests/nginx-ingress.${APP_VERSION}.yaml
+
+# Check the installation
+kubectl -n ingress-nginx get pods
+
+
 
