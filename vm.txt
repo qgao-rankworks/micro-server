@@ -736,6 +736,7 @@ https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/docs/examples/ht
 kubectl get po
 
 # install google client cli ---------https://cloud.google.com/sdk/docs/install#linux
+-------------------------------------https://cloud.google.com/artifact-registry/docs/docker/authentication
 # for Linux 64-bit(x86_64)
 cd /home/rankman
 curl -O https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-cli-447.0.0-linux-x86_64.tar.gz
@@ -744,4 +745,34 @@ tar -xf google-cloud-cli-447.0.0-linux-x86_64.tar.gz
 ./google-cloud-sdk/bin/gcloud init
 
 
+# Set up authentication for Docker
+cd /home/rankman/vm-rankworks/in-site/api
+gcloud auth activate-service-account in-site-server@insite-369020.iam.gserviceaccount.com --key-file=server_secret.json
 
+gcloud auth configure-docker northamerica-northeast1-docker.pkg.dev
+
+
+###Choosing an authentication method 1) 2) or 3) 
+options 1) Standalone credential helper
+VERSION=2.1.14
+OS=linux  # or "darwin" for OSX, "windows" for Windows.
+ARCH=amd64  # or "386" for 32-bit OSs
+
+curl -fsSL "https://github.com/GoogleCloudPlatform/docker-credential-gcr/releases/download/v${VERSION}/docker-credential-gcr_${OS}_${ARCH}-${VERSION}.tar.gz" \
+| tar xz docker-credential-gcr \
+&& chmod +x docker-credential-gcr && sudo mv docker-credential-gcr /usr/bin/
+
+docker-credential-gcr configure-docker --registries=northamerica-northeast1-docker.pkg.dev
+echo "https://northamerica-northeast1-docker.pkg.dev" | docker-credential-gcr get
+
+options 2)Access token
+gcloud auth print-access-token \
+    --impersonate-service-account in-site-server@insite-369020.iam.gserviceaccount.com | docker login \
+    -u oauth2accesstoken \
+    --password-stdin https://northamerica-northeast1-docker.pkg.dev
+
+gcloud auth print-access-token | docker login -u oauth2accesstoken \
+    --password-stdin https://northamerica-northeast1-docker.pkg.dev
+
+options 3)Service account key
+cat server_secret.json | docker login -u server_secret.json --password-stdin https://northamerica-northeast1-docker.pkg.dev
