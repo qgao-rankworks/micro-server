@@ -735,8 +735,13 @@ https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/docs/examples/ht
 
 kubectl get po
 
-
-
+# install google client cli ---------https://cloud.google.com/sdk/docs/install#linux
+# for Linux 64-bit(x86_64)
+cd /home/rankman
+curl -O https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-cli-447.0.0-linux-x86_64.tar.gz
+tar -xf google-cloud-cli-447.0.0-linux-x86_64.tar.gz 
+./google-cloud-sdk/install.sh
+./google-cloud-sdk/bin/gcloud init
 
 
 
